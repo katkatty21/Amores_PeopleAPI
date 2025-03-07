@@ -1,65 +1,177 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeopleAPI Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #4285f4;
+            --primary-dark: #0d47a1;
+            --secondary-color: #f8f9fa;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(to right, #4facfe, #8f94fb);
-            margin: 0;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            font-family: 'Poppins', Arial, sans-serif;
+            padding: 20px;
         }
+
         .login-container {
             background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .login-header {
+            background: var(--primary-color);
+            padding: 30px 20px;
             text-align: center;
-            width: 350px;
+            color: white;
         }
-        h2 {
-            color: #333;
-            margin-bottom: 15px;
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
-        p {
-            color: #666;
-            margin-bottom: 20px;
+
+        .login-header p {
+            font-size: 16px;
+            opacity: 0.9;
         }
+
+        .login-body {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .login-body p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
         .google-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #c1351d;
+            background: var(--primary-color);
             color: white;
-            padding: 12px;
-            border-radius: 5px;
+            padding: 14px 20px;
+            border-radius: 50px;
             text-decoration: none;
             font-size: 16px;
-            font-weight: bold;
-            transition: background 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+            width: 100%;
         }
+
         .google-btn:hover {
-            background: #c0bfbf;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(26, 115, 232, 0.5);
         }
+
+        .google-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.4);
+        }
+
         .google-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            background-color: white;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        .login-footer {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231a73e8' fill-opacity='0.1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .login-container {
+                max-width: 100%;
+            }
+
+            .login-header {
+                padding: 25px 15px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+
+            .login-body {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
-        <h2>Welcome to PeopleAPI</h2>
-        <p>Sign in with Google to continue</p>
-        <a href="/oauth2/authorization/google" class="google-btn">
-            <img class="google-icon" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
-            Login with Google
-        </a>
+        <div class="login-header">
+            <h1>Welcome to PeopleAPI</h1>
+            <p>Your centralized people management solution</p>
+        </div>
+        <div class="login-body">
+            <p>Please sign in with your Google account to continue</p>
+            <a href="/oauth2/authorization/google" class="google-btn">
+                <img class="google-icon" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google Logo">
+                <span>Sign in with Google</span>
+            </a>
+        </div>
     </div>
 </body>
+
 </html>

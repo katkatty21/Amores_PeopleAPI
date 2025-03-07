@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Contact Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #f1f5f9;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-color);
+            min-height: 100vh;
+            font-size: 0.9rem;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+        }
+
+        .search-icon {
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.75rem;
+        }
+
+        .contacts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .contact-card {
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-name-section {
+            padding: 1.25rem;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .contact-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .contact-info-section {
+            display: flex;
+            flex: 1;
+            padding: 1rem;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .info-group {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        .info-content {
+            font-size: 0.85rem;
+            color: var(--text-color);
+        }
+
+        .multi-value {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            margin-left: auto;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .action-btn {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--secondary-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .action-btn.edit:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .empty-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.9rem;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .modal-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-title-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 50%;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.15rem;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--text-color);
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.85rem;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.65rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .contact-item .form-input {
+            flex: 1;
+        }
+
+        .remove-btn {
+            width: 1.85rem;
+            height: 1.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .modal-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 350px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease forwards;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-icon {
+            width: 1.85rem;
+            height: 1.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            background: #dcfce7;
+            color: var(--success-color);
+        }
+
+        .toast-error .toast-icon {
+            background: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .toast-warning .toast-icon {
+            background: #fef3c7;
+            color: var(--warning-color);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .toast-message {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 0.25rem;
+        }
+
+        .confirm-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            z-index: 100;
+            display: none;
+            text-align: center;
+            padding: 1.75rem;
+        }
+
+        .confirm-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fee2e2;
+            color: var(--danger-color);
+            border-radius: 50%;
+            margin: 0 auto 1.25rem;
+            font-size: 1.25rem;
+        }
+
+        .confirm-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.65rem;
+            color: var(--text-color);
+        }
+
+        .confirm-message {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .list-header {
+            display: flex;
+            background: var(--secondary-color);
+            border-radius: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .header-name {
+            min-width: 180px;
+            padding-left: 1.25rem;
+        }
+
+        .header-info {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+        }
+
+        .header-info-item {
+            flex: 1;
+        }
+
+        .header-actions {
+            width: 5rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .contact-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .contact-name-section {
+                min-width: 0;
+                width: 100%;
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .contact-info-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .info-group {
+                width: 100%;
+            }
+
+            .contact-actions {
+                padding: 0 1rem 1rem;
+                justify-content: flex-end;
+                border-left: none;
+            }
+
+            .list-header {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <h1>Contact Management</h1>
+                <button class="btn btn-secondary" onclick="window.location.href='/logout'"
+                    style="color: #ef4444; font-weight: 600;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="search-bar">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" class="search-input" placeholder="Search contacts..." id="searchInput">
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <button class="btn btn-primary" onclick="showAddForm()">
+                    <i class="fas fa-plus"></i>
+                    Add Contact
+                </button>
+            </div>
+            <div class="list-header">
+                <div class="header-name">Name</div>
+                <div class="header-info">
+                    <div class="header-info-item">Email</div>
+                    <div class="header-info-item">Phone</div>
+                    <div class="header-info-item">Birthday</div>
+                </div>
+                <div class="header-actions">Actions</div>
+            </div>
+            <div id="contactsContainer" class="contacts-list">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading contacts...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal" id="addContactModal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-title-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                Add New Contact
+            </div>
+            <button class="modal-close" onclick="hideAddForm()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="addContactForm">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name <span class="required-mark">*</span></label>
+                        <input type="text" class="form-input" id="firstName" placeholder="Enter first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" id="lastName" placeholder="Enter last name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Birthday</label>
+                    <input type="date" class="form-input" id="birthday">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Addresses <span class="required-mark">*</span></label>
+                    <div id="addEmailList" class="contact-list"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addEmailField('addEmailList')"
+                        style="margin-top: 0.5rem;">
+                        <i class="fas fa-plus"></i> Add Email
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Numbers <span class="required-mark">*</span></label>
+                    <div id="addPhoneList" class="contact-list"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addPhoneField('addPhoneList')"
+                        style="margin-top: 0.5rem;">
+                        <i class="fas fa-plus"></i> Add Phone
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideAddForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Contact</button>
+            </div>
+        </form>
+    </div>
+    <div class="modal" id="updateContactModal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-title-icon">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                Update Contact
+            </div>
+            <button class="modal-close" onclick="hideUpdateForm()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="updateContactForm">
+            <input type="hidden" id="resourceName">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name <span class="required-mark">*</span></label>
+                        <input type="text" class="form-input" id="updateFirstName" placeholder="Enter first name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" id="updateLastName" placeholder="Enter last name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Birthday</label>
+                    <input type="date" class="form-input" id="updateBirthday">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Addresses <span class="required-mark">*</span></label>
+                    <div id="updateEmailList" class="contact-list"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addEmailField('updateEmailList')"
+                        style="margin-top: 0.5rem;">
+                        <i class="fas fa-plus"></i> Add Email
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Numbers <span class="required-mark">*</span></label>
+                    <div id="updatePhoneList" class="contact-list"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addPhoneField('updatePhoneList')"
+                        style="margin-top: 0.5rem;">
+                        <i class="fas fa-plus"></i> Add Phone
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideUpdateForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Contact</button>
+            </div>
+        </form>
+    </div>
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class="confirm-title">Delete Contact</div>
+        <div class="confirm-message">Are you sure you want to delete this contact? This action cannot be undone.</div>
+        <div class="confirm-actions">
+            <button class="btn btn-secondary" id="cancelDelete">Cancel</button>
+            <button class="btn btn-danger" id="confirmDelete">Delete</button>
+        </div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        function showToast(type, title, message, duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            let iconClass = 'fa-info-circle';
+            if (type === 'success') iconClass = 'fa-check-circle';
+            if (type === 'error') iconClass = 'fa-exclamation-circle';
+            if (type === 'warning') iconClass = 'fa-exclamation-triangle';
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+        function showModal(modalId) {
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        function hideModal(modalId) {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        function showAddForm() {
+            clearAddForm();
+            addEmailField("addEmailList");
+            addPhoneField("addPhoneList");
+            showModal('addContactModal');
+        }
+        function hideAddForm() {
+            hideModal('addContactModal');
+        }
+        function showUpdateForm(resourceName, firstName, lastName, emailAddresses, phoneNumbers, birthdays) {
+            document.getElementById("resourceName").value = resourceName;
+            document.getElementById("updateFirstName").value = firstName || "";
+            document.getElementById("updateLastName").value = lastName || "";
+            if (birthdays && birthdays.length > 0 && birthdays[0].date) {
+                const date = birthdays[0].date;
+                const formattedDate = `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+                document.getElementById("updateBirthday").value = formattedDate;
+            } else {
+                document.getElementById("updateBirthday").value = "";
+            }
+            const emailList = document.getElementById("updateEmailList");
+            emailList.innerHTML = "";
+            if (emailAddresses && emailAddresses.length > 0) {
+                emailAddresses.forEach((email) => {
+                    const div = document.createElement("div");
+                    div.className = "contact-item";
+                    div.innerHTML = `
+                        <input type="email" class="form-input" value="${email.value}" required>
+                        <button type="button" class="remove-btn" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    emailList.appendChild(div);
+                });
+            } else {
+                addEmailField("updateEmailList");
+            }
+            const phoneList = document.getElementById("updatePhoneList");
+            phoneList.innerHTML = "";
+            if (phoneNumbers && phoneNumbers.length > 0) {
+                phoneNumbers.forEach((phone) => {
+                    const div = document.createElement("div");
+                    div.className = "contact-item";
+                    div.innerHTML = `
+                        <input type="tel" class="form-input" value="${phone.value}" required>
+                        <button type="button" class="remove-btn" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    phoneList.appendChild(div);
+                });
+            } else {
+                addPhoneField("updatePhoneList");
+            }
+            showModal('updateContactModal');
+        }
+        function hideUpdateForm() {
+            hideModal('updateContactModal');
+        }
+        let pendingDeleteResourceName = null;
+        function showConfirmDialog(resourceName) {
+            pendingDeleteResourceName = resourceName;
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById('confirmDialog').style.display = 'block';
+        }
+        function hideConfirmDialog() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('confirmDialog').style.display = 'none';
+            pendingDeleteResourceName = null;
+        }
+        document.getElementById('cancelDelete').addEventListener('click', hideConfirmDialog);
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            if (pendingDeleteResourceName) {
+                performDeleteContact(pendingDeleteResourceName);
+                hideConfirmDialog();
+            }
+        });
+        function addEmailField(containerId) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement("div");
+            div.className = "contact-item";
+            div.innerHTML = `
+                <input type="email" class="form-input" placeholder="Email Address" required>
+                <button type="button" class="remove-btn" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+        function addPhoneField(containerId) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement("div");
+            div.className = "contact-item";
+            div.innerHTML = `
+                <input type="tel" class="form-input" placeholder="Phone Number" required>
+                <button type="button" class="remove-btn" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+        function getContactValues(containerId) {
+            const container = document.getElementById(containerId);
+            const inputs = container.getElementsByTagName("input");
+            return Array.from(inputs)
+                .map((input) => input.value)
+                .filter((value) => value.trim() !== "");
+        }
+        function clearAddForm() {
+            document.getElementById("firstName").value = "";
+            document.getElementById("lastName").value = "";
+            document.getElementById("birthday").value = "";
+            document.getElementById("addEmailList").innerHTML = "";
+            document.getElementById("addPhoneList").innerHTML = "";
+        }
+        function showEmptyState() {
+            const container = document.getElementById('contactsContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <div class="empty-title">No contacts found</div>
+                    <div class="empty-description">Your contact list is empty. Add your first contact to get started.</div>
+                    <button class="btn btn-primary" onclick="showAddForm()">
+                        <i class="fas fa-plus"></i> Add Your First Contact
+                    </button>
+                </div>
+            `;
+        }
+        function showLoadingState() {
+            const container = document.getElementById('contactsContainer');
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading contacts...</div>
+                </div>
+            `;
+        }
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const contactCards = document.querySelectorAll('.contact-card');
+            contactCards.forEach(card => {
+                const name = card.querySelector('.contact-name').textContent.toLowerCase();
+                const emails = Array.from(card.querySelectorAll('.email-value')).map(el => el.textContent.toLowerCase());
+                const phones = Array.from(card.querySelectorAll('.phone-value')).map(el => el.textContent.toLowerCase());
+                const matchesSearch = name.includes(searchTerm)
+                    || emails.some(email => email.includes(searchTerm))
+                    || phones.some(phone => phone.includes(searchTerm));
+                card.style.display = matchesSearch ? 'flex' : 'none';
+            });
+        });
+        function fetchContacts() {
+            showLoadingState();
+            $.get("/contacts/data", function (data) {
+                const container = document.getElementById('contactsContainer');
+                try {
+                    if (typeof data === "string") {
+                        data = JSON.parse(data);
+                    }
+                    if (!data.connections || data.connections.length === 0) {
+                        showEmptyState();
+                        return;
+                    }
+                    container.innerHTML = '';
+                    data.connections.forEach((contact) => {
+                        let firstName = "No Name";
+                        let lastName = "";
+                        if (contact.names && contact.names.length > 0) {
+                            const fullName = contact.names[0].displayName || "";
+                            const nameParts = fullName.split(" ");
+                            firstName = nameParts[0] || "No Name";
+                            lastName = nameParts.slice(1).join(" ") || "";
+                        }
+                        let birthday = "Not specified";
+                        if (contact.birthdays && contact.birthdays.length > 0 && contact.birthdays[0].date) {
+                            const date = contact.birthdays[0].date;
+                            birthday = `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+                        }
+                        let emailsHtml = '';
+                        if (contact.emailAddresses && contact.emailAddresses.length > 0) {
+                            emailsHtml = contact.emailAddresses.map(email =>
+                                `<div class="email-value">${email.value}</div>`
+                            ).join('');
+                        } else {
+                            emailsHtml = '<div class="email-value">No email</div>';
+                        }
+                        let phonesHtml = '';
+                        if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+                            phonesHtml = contact.phoneNumbers.map(phone =>
+                                `<div class="phone-value">${phone.value}</div>`
+                            ).join('');
+                        } else {
+                            phonesHtml = '<div class="phone-value">No phone</div>';
+                        }
+                        const safeResourceName = contact.resourceName.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                        const fullName = firstName + " " + lastName;
+                        const safeFirstName = firstName.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                        const safeLastName = lastName.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                        const safeEmailAddresses = JSON.stringify(contact.emailAddresses || []);
+                        const safePhoneNumbers = JSON.stringify(contact.phoneNumbers || []);
+                        const safeBirthdays = JSON.stringify(contact.birthdays || []);
+                        const card = document.createElement('div');
+                        card.className = 'contact-card';
+                        card.innerHTML = `
+                            <div class="contact-name-section">
+                                <div class="contact-name">${firstName} ${lastName}</div>
+                            </div>
+                            <div class="contact-info-section">
+                                <div class="info-group">
+                                    <div class="info-label">Email</div>
+                                    <div class="info-content multi-value">
+                                        ${emailsHtml}
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label">Phone</div>
+                                    <div class="info-content multi-value">
+                                        ${phonesHtml}
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label">Birthday</div>
+                                    <div class="info-content">
+                                        ${birthday}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-actions">
+                                <button class="action-btn edit"
+                                    onclick='handleUpdate(
+                                        "${safeResourceName}",
+                                        "${safeFirstName}",
+                                        "${safeLastName}",
+                                        "${safeEmailAddresses}",
+                                        "${safePhoneNumbers}",
+                                        "${safeBirthdays}"
+                                    )'>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete"
+                                    onclick="deleteContact('${safeResourceName}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } catch (error) {
+                    console.error("Error parsing contacts:", error);
+                    showToast('error', 'Error', 'Failed to process contact data.');
+                    showEmptyState();
+                }
+            }).fail(function (xhr) {
+                if (xhr.status === 403) {
+                    showToast('error', 'Access Denied', 'Insufficient Permissions. Please log in again.');
+                    window.location.href = "/logout";
+                } else {
+                    showToast('error', 'Error', 'Failed to fetch contacts.');
+                    showEmptyState();
+                }
+            });
+        }
+        $("#addContactForm").submit(function (event) {
+            event.preventDefault();
+            const firstName = $("#firstName").val().trim();
+            const emails = getContactValues("addEmailList");
+            const phones = getContactValues("addPhoneList");
+            if (!firstName) {
+                showToast('error', 'Validation Error', 'First name is required.');
+                return;
+            }
+            if (emails.length === 0) {
+                showToast('error', 'Validation Error', 'At least one email address is required.');
+                return;
+            }
+            if (phones.length === 0) {
+                showToast('error', 'Validation Error', 'At least one phone number is required.');
+                return;
+            }
+            $.post("/contacts/add", {
+                firstName: firstName,
+                lastName: $("#lastName").val(),
+                birthday: $("#birthday").val(),
+                emails: emails,
+                phoneNumbers: phones
+            })
+                .done(function () {
+                    showToast('success', 'Success', 'Contact added successfully!');
+                    hideAddForm();
+                    fetchContacts();
+                })
+                .fail(function () {
+                    showToast('error', 'Error', 'Failed to add contact.');
+                });
+        });
+        $("#updateContactForm").submit(function (event) {
+            event.preventDefault();
+            const firstName = $("#updateFirstName").val().trim();
+            const emails = getContactValues("updateEmailList");
+            const phones = getContactValues("updatePhoneList");
+            if (!firstName) {
+                showToast('error', 'Validation Error', 'First name is required.');
+                return;
+            }
+            if (emails.length === 0) {
+                showToast('error', 'Validation Error', 'At least one email address is required.');
+                return;
+            }
+            if (phones.length === 0) {
+                showToast('error', 'Validation Error', 'At least one phone number is required.');
+                return;
+            }
+            const updateData = {
+                resourceName: $("#resourceName").val(),
+                firstName: firstName,
+                lastName: $("#updateLastName").val(),
+                birthday: $("#updateBirthday").val(),
+                emails: emails,
+                phoneNumbers: phones
+            };
+            $.ajax({
+                url: "/contacts/update",
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify(updateData),
+                success: function (response) {
+                    if (response.includes("Error")) {
+                        showToast('error', 'Update Error', response);
+                    } else {
+                        showToast('success', 'Success', 'Contact updated successfully!');
+                        hideUpdateForm();
+                        fetchContacts();
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Update error:", xhr.responseText);
+                    showToast('error', 'Error', 'Failed to update contact. Please try again.');
+                }
+            });
+        });
+        function deleteContact(resourceName) {
+            showConfirmDialog(resourceName);
+        }
+        function performDeleteContact(resourceName) {
+            $.ajax({
+                url: "/contacts/delete",
+                type: "DELETE",
+                data: { resourceName: resourceName },
+                success: function () {
+                    showToast('success', 'Success', 'Contact deleted successfully!');
+                    fetchContacts();
+                },
+                error: function () {
+                    showToast('error', 'Error', 'Failed to delete contact.');
+                }
+            });
+        }
+        function handleUpdate(resourceName, firstName, lastName, emailAddresses, phoneNumbers, birthdays) {
+            try {
+                const parsedEmails = JSON.parse(emailAddresses);
+                const parsedPhones = JSON.parse(phoneNumbers);
+                const parsedBirthdays = JSON.parse(birthdays);
+                showUpdateForm(resourceName, firstName, lastName, parsedEmails, parsedPhones, parsedBirthdays);
+            } catch (error) {
+                console.error("Error in handleUpdate:", error);
+                showToast('error', 'Error', 'There was an error preparing the update form. Please try again.');
+            }
+        }
+        document.getElementById('modalOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                hideAddForm();
+                hideUpdateForm();
+                hideConfirmDialog();
+            }
+        });
+        $(document).ready(function () {
+            fetchContacts();
+        });
+    </script>
+</body>
+
+</html>
